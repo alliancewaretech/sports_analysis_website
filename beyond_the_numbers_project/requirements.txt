@@ -1,0 +1,19 @@
+#python -m venv myworld
+#source myworld/bin/activate (To acticate)
+
+#Install Django
+Django
+
+pandas==1.4.4 
+
+sqlalchemy==1.4.39
+
+
+
+#django-admin --version
+
+#django-admin startproject my_tennis_club
+
+#py manage.py runserver
+
+psycopg2
