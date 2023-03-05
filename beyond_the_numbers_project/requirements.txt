@@ -1,19 +1,27 @@
 #python -m venv myworld
 #source myworld/bin/activate (To acticate)
-
+#python -m pip install ipykernel -U --force-reinstall
 #Install Django
 Django
-
+#source venv/bin/activate
+#python3 -m ipykernel install --user --name=myproject
 pandas==1.4.4 
 
 sqlalchemy==1.4.39
 
-
+#conda install jupyter
 
 #django-admin --version
 
 #django-admin startproject my_tennis_club
 
 #py manage.py runserver
-
+#aws cli
+#curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"                                                            
+#sudo installer -pkg AWSCLIV2.pkg -target /
+# aws configure
 psycopg2
+s3fs moto
+boto3 moto
+pyarrow
+configParser
