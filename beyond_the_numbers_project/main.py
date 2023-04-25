@@ -1,23 +1,26 @@
 import os
 import sys
-from load import test
 import constants
 from data_access_layer import postgres_data_read
-class SportsAnalysis():
+from data_access_layer.gouri_learning import ReadJsonLocalS3
+
+
+class SportsAnalysis:
     def __init__(self) -> None:
-        pass
+        rj = ReadJsonLocalS3()
+        rj.read_json_local("gouri is amazing")
 
     def start(self):
         try:
-            print("Started")
+            print(2 / 0)
 
-        except:
-            print("Exception raised")
+        except Exception as e:
+            print("Exception raised", e)
 
         finally:
             print("Final executed")
 
 
-if __name__=="__main__":
-    sports_driver=SportsAnalysis()
+if __name__ == "__main__":
+    sports_driver = SportsAnalysis()
     sports_driver.start()

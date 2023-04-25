@@ -12,5 +12,8 @@
             "path": "/usr/bin/python3",
             "type": "pythonEnvironment"
         }
+    ],
+    "python.analysis.extraPaths": [
+        "./beyond_the_numbers_project/portfolio_website"
     ]
 }
