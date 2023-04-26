@@ -8,8 +8,77 @@
 from django.db import models
 
 
+class AuthGroup(models.Model):
+    name = models.CharField(unique=True, max_length=150)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group'
+
+
+class AuthGroupPermissions(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group_permissions'
+        unique_together = (('group', 'permission'),)
+
+
+class AuthPermission(models.Model):
+    name = models.CharField(max_length=255)
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
+    codename = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_permission'
+        unique_together = (('content_type', 'codename'),)
+
+
+class AuthUser(models.Model):
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.BooleanField()
+    username = models.CharField(unique=True, max_length=150)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.CharField(max_length=254)
+    is_staff = models.BooleanField()
+    is_active = models.BooleanField()
+    date_joined = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user'
+
+
+class AuthUserGroups(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_groups'
+        unique_together = (('user', 'group'),)
+
+
+class AuthUserUserPermissions(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_user_permissions'
+        unique_together = (('user', 'permission'),)
+
+
 class Deliveries(models.Model):
-    delivery_id = models.BigAutoField(primary_key=True)
+    delivery_id = models.BigAutoField(primary_key=True)  # The composite primary key (delivery_id, batsman_id, bowler_id, non_striker_id, match_id) found, that is not supported. The first column is selected.
     match_id = models.IntegerField()
     inning_id = models.IntegerField(blank=True, null=True)
     batsman_id = models.IntegerField()
@@ -30,10 +99,65 @@ class Deliveries(models.Model):
         unique_together = (('delivery_id', 'batsman_id', 'bowler_id', 'non_striker_id', 'match_id'),)
 
 
+class DjangoAdminLog(models.Model):
+    action_time = models.DateTimeField()
+    object_id = models.TextField(blank=True, null=True)
+    object_repr = models.CharField(max_length=200)
+    action_flag = models.SmallIntegerField()
+    change_message = models.TextField()
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'django_admin_log'
+
+
+class DjangoContentType(models.Model):
+    app_label = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'django_content_type'
+        unique_together = (('app_label', 'model'),)
+
+
+class DjangoMigrations(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    app = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    applied = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_migrations'
+
+
+class DjangoSession(models.Model):
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.TextField()
+    expire_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_session'
+
+
+class HomeTeacher(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.CharField(max_length=80)
+    age = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'home_teacher'
+
+
 class Innings(models.Model):
     innings = models.OneToOneField('MatchesInnings', models.DO_NOTHING)
-    batting_team = models.OneToOneField('Teams', models.DO_NOTHING, primary_key=True)
-    bowling_team = models.ForeignKey('Teams', models.DO_NOTHING)
+    batting_team = models.OneToOneField('Teams', models.DO_NOTHING, primary_key=True)  # The composite primary key (batting_team_id, bowling_team_id, innings_id) found, that is not supported. The first column is selected.
+    bowling_team = models.ForeignKey('Teams', models.DO_NOTHING, related_name='innings_bowling_team_set')
     total_runs = models.IntegerField(blank=True, null=True)
     wickets_lost = models.IntegerField(blank=True, null=True)
     innings_number = models.IntegerField(blank=True, null=True)
@@ -72,6 +196,19 @@ class MatchesInnings(models.Model):
         db_table = 'matches_innings'
 
 
+class MoviesMovies(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    movie_title = models.CharField(max_length=150)
+    release_year = models.IntegerField()
+    director = models.CharField(max_length=150)
+    movie_plot = models.TextField()
+    movie_poster = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'movies_movies'
+
+
 class PlayerStats(models.Model):
     player = models.OneToOneField('Players', models.DO_NOTHING, primary_key=True)
     matches_played = models.IntegerField(blank=True, null=True)
@@ -95,7 +232,7 @@ class Players(models.Model):
     player_id = models.BigAutoField(primary_key=True)
     player_name = models.CharField(max_length=255, blank=True, null=True)
     team = models.ForeignKey('Teams', models.DO_NOTHING)
-    team_name = models.ForeignKey('Teams', models.DO_NOTHING, db_column='team_name', to_field='team_name', blank=True, null=True)
+    team_name = models.ForeignKey('Teams', models.DO_NOTHING, db_column='team_name', to_field='team_name', related_name='players_team_name_set', blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
     batting_style = models.CharField(max_length=255, blank=True, null=True)
     bowling_style = models.CharField(max_length=255, blank=True, null=True)
@@ -123,9 +260,9 @@ class Series(models.Model):
 
 class SeriesMatches(models.Model):
     series = models.ForeignKey(Series, models.DO_NOTHING)
-    match = models.OneToOneField(Matches, models.DO_NOTHING, primary_key=True)
+    match = models.OneToOneField(Matches, models.DO_NOTHING, primary_key=True)  # The composite primary key (match_id, series_id, team_1, team_2) found, that is not supported. The first column is selected.
     team_1 = models.ForeignKey('Teams', models.DO_NOTHING, db_column='team_1')
-    team_2 = models.ForeignKey('Teams', models.DO_NOTHING, db_column='team_2')
+    team_2 = models.ForeignKey('Teams', models.DO_NOTHING, db_column='team_2', related_name='seriesmatches_team_2_set')
     match_number = models.IntegerField(blank=True, null=True)
 
     class Meta:

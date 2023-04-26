@@ -1,3 +1,7 @@
+import os.path, sys
+
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+sys.path.append("/Users/nyzy/allianceware_2/sports_analysis_website/beyond_the_numbers_project")
 from sqlalchemy import types
 import datetime
 import os
@@ -425,14 +429,14 @@ class S3ToSQL:
     def start_transformation(self):
         ## read json files in a loop
 
-        # teams_table = self.create_teams_table()
-        # matches_table = self.create_matches_table()
-        # series_table = self.create_series_table()
-        # players_table = self.create_players_table()
-        # matches_innings = self.create_matches_innings_table()
-        # series_matches_table = self.create_series_matches_table()
-        # innings_table  = self.create_innings_table()
-        # deliveries_table = self.create_deliveries_table()
+        teams_table = self.create_teams_table()
+        matches_table = self.create_matches_table()
+        series_table = self.create_series_table()
+        players_table = self.create_players_table()
+        matches_innings = self.create_matches_innings_table()
+        series_matches_table = self.create_series_matches_table()
+        innings_table  = self.create_innings_table()
+        deliveries_table = self.create_deliveries_table()
         return None
 
 

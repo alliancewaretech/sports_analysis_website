@@ -2,14 +2,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status 
 from rest_framework import permissions
-from ..models import Matches
+from ..models import Matches,Innings
 from .. import serializers
 from django.shortcuts import render
 
 def my_view(request):
-    mymatches = Matches.objects.all()
-    context = {'mymodels': mymatches}
-    return render(request, 'api.html', context)
+    mymatches = Innings.objects.all()
+    print(mymatches)
+    #context = {'mymodels': mymatches}
+    return render(request, 'api.html', {'mymatches':mymatches})
 
 class MatchesListApiView(APIView):
     def get(self,request,*args,**kwargs):
